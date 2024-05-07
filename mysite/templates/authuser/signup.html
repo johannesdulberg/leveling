@@ -1,0 +1,39 @@
+{% extends "../base.html" %}
+{% load tailwind_filters %}
+{% block content %}
+<!--
+<style>
+    .solidButton {
+        background-color: #339989;
+        text-white;
+        border: none;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        padding: 12px 24px;
+        margin: 4px 2px;
+        cursor: pointer;
+        border-radius: 8px;
+        transition: background-color 0.3s;
+    }
+    .solidButton:hover {
+        background-color: #7DE2D1;
+    }
+</style>
+-->
+<div class=" flex flex-col items-center justify-center min-h-screen">
+    <h1 class="text-3xl font-bold mb-6  pt-[80px]">Signup</h1>
+    <form class="site-form w-full max-w-md mt-8 p-4" action="/authuser/signup/" method="post">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <input type="submit" value="Signup" class="mt-4 px-4 py-2 bg-[#6C63FF] text-white rounded">
+    </form>
+</div>
+<!--
+<div class="mt-6">
+    <a class="px-8 ml-4 py-3 solidButton" href="/authuser/login">LOGIN</a>
+    <a class="px-8 ml-4 py-3 solidButton" href="/authuser/logout">LOGOUT</a>
+</div>
+-->
+{% endblock %}

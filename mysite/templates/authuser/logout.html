@@ -1,0 +1,20 @@
+{% extends "../base.html" %}
+{% block content %}
+
+
+<div class="flex flex-col items-center justify-center min-h-screen">
+    <h1 class=" text-4xl primary-text">Log Out</h1>
+    <form class="site-form" action="/authuser/logout/" method="post">
+        {% csrf_token %}
+        <input  class="mt-4 px-4 py-2 bg-[#6C63FF] text-white rounded" type="submit" value="Logout" />
+    </form>
+  </div>
+
+
+
+<!-- 
+<a class='px-8 ml-4 py-3 solidButton' href="/authuser/login">LOGIN</a>
+<a class='px-8 ml-4 py-3 solidButton' href="/authuser/signup">SIGNUP</a>
+--> 
+
+{% endblock %}

@@ -1,0 +1,130 @@
+{% load static tailwind_tags %}
+
+<!DOCTYPE html>
+<html class="h-full" lang="en">
+	<head>
+    
+
+    <title>Django Tailwind</title>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="ie=edge">
+		{% tailwind_css %}
+        <script src="../static/js/mysite.js">
+
+        </script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/date-fns"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+	</head>
+    <style>
+        .active{
+          font-weight: 900;
+          font-size: large;
+        }
+        #myScrollspy{
+            transition: background-color 0.5s;
+        }
+        #dropdownMenu{
+            transition: opacity 0.5s;
+        }
+      </style>
+      <body class="relative">
+        
+      
+      <nav class='w-screen h-[80px] z-20 fixed drop-shadow-lg top-0 fadeIn  text-black bg-white'  id="myScrollspy" >
+        <div class='px-2 flex w-full h-full justify-between'>
+          <div class='flex items-center flex-row'>
+                <a class='text-3xl font-extrabold mr-4 sm:text-4xl pt-2 hidden sm:inline-block' href="/">ACROCON</a>
+          </div>
+          <div class='flex items-center'>
+          <ul style="list-style: none" class='hidden md:flex items-center'>
+                        <li ><a class="m-4 nbar projekte" href="/moves/exercises" >MOVES</a></li>
+                        <li ><a class="p-4 nbar projekte" href="/moves/create" >ADD MOVE</a></li>
+                        <li ><a class="m-4 nbar projekte" href="/tracker/createWorkout" >FITNESSTRACKER</a></li>
+                        <!-- <li ><a class="p-4 nbar ablauf" href="/tracker/record" >RECORD</a></li> -->
+          </ul>
+          <div class="hidden md:flex pr-4">
+            {% if user.is_authenticated %}
+            <li style="list-style: none"><a class="p-4 nbar projekte" href="/authuser/logout" >LOGOUT</a></li>
+            
+            <!-- 
+            <form class="site-form" action="/authuser/logout/" method="post">
+                {% csrf_token %}
+                <input class="px-8 ml-4 py-3 solidButton button-primary" type="submit" value="LOGOUT" />
+            </form>
+            -->
+            {% else %}
+            <a
+              class="px-8 ml-4 py-3 solidButton button-primary"
+              href="/authuser/login"
+              >LOGIN</a
+            >
+            {% endif %}
+          </div>
+            <!-- <div class='hidden md:flex pr-4'>
+            <a class='px-8 ml-4 py-3 solidButton' href="/authuser/signup">PROFILE</a>
+            </div> -->
+            <button class="md:hidden mr-4" id="dropButton"> 
+                <svg class="{% if self.transparent %} fill-white {% else %} fill-black {% endif %}" id="burgerMenu" viewBox="0 0 100 80" width="32" height="32">
+                    <rect width="100" height="15"></rect>
+                    <rect y="30" width="100" height="15"></rect>
+                    <rect y="60" width="100" height="15"></rect>
+                  </svg>
+            </button>
+          </div>
+        </div>
+        <ul style="list-style: none" class="absolute hidden  bg-white text-black w-full px-8 text-center md:hidden" id="dropdownMenu">
+            <li ><a class="m-4 nbar projekte" href="/moves/exercises" >MOVES</a></li>
+            <li ><a class="p-4 nbar projekte" href="/moves/create" >ADD MOVE</a></li>
+            <li ><a class="m-4 nbar projekte" href="/tracker/createWorkout" >FITNESSTRACKER</a></li>
+        
+      
+          <div class='flex flex-col my-4 '>
+            {% if user.is_authenticated %}
+            <li style="list-style: none"><a class="p-4 nbar projekte" href="/authuser/logout" >LOGOUT</a></li>
+            
+            <!-- 
+            <form class="site-form" action="/authuser/logout/" method="post">
+                {% csrf_token %}
+                <input class="px-8 ml-4 py-3 solidButton button-primary" type="submit" value="LOGOUT" />
+            </form>
+            -->
+            {% else %}
+            <a
+              class="px-8 ml-4 py-3 solidButton button-primary"
+              href="/authuser/login"
+              >LOGIN</a
+            >
+            {% endif %}
+          </div>
+        </ul> 
+      </nav>
+      {% block content %}
+             {% endblock %}
+      
+             <footer style="box-shadow: 5px 5px 10px 5px #CCC;" class='w-screen h-[80px] text-black flex items-center p-4 mt-10'  >
+              <a class="px-8 ml-4 py-3 solidButton button-primary" href="/impressum">
+                  Impressum
+                </a>
+          </footer>
+    
+
+    </body>
+      
+      
+      
+      <script>
+       
+    
+        document.getElementById("dropButton").addEventListener("click", function() {
+            var advancedSettings = document.getElementById("dropdownMenu");
+            advancedSettings.classList.toggle("hidden");
+        });
+        </script>
+
+        
+        
+	
+
+</html>
