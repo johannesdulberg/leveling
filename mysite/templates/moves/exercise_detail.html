@@ -8,7 +8,145 @@
         width:70%;
         height:100%;
     }
+    body {
+    background: linear-gradient(
+        to top left, 
+        #888888 0%, #888888 10%, /* First grey line between 24% and 26% */
+        #ffffff 10% 40%, /* White between the two lines */
+        #888888 40%, #888888 80%, /* Second grey line between 49% and 51% */
+        #ffffff 80% /* White starts again at 51% */
+        
+    );
+    background-attachment: fixed;
+    
+    }
+    #exercise_title{
+        font-size: 40px;
+    }
+    #img{
+        height: 500px;
+        width:300px;
+    }
+    #progressBody{
+    position: relative;
+    min-height: 504px;
+    height:504px;
+    width:504;
+    min-width: 504px;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  @keyframes moveNode {
+    from {
+      transform: translateX(-500px); /* Starts far left */
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0); /* Ends at the calculated position */
+      opacity: 1;
+    }
+  }
+  @keyframes connections {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  #centerNode{
+    width: 140px;
+    height: 140px;
+    /* border: 2px solid */
+  }
+  #innerCenterNode{
+    top: 10px;
+    left: 10px;
+    position: relative;
+    border: 2px solid;
+    width: 120px;
+    height: 120px;
+    
+  }
+  .progressNode {
+    opacity: 0;
+    /* border: 2px solid; */
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    position: absolute;
+    animation: moveNode 1s ease-out forwards; /* Animation will play once */
+  }
+
+  .innerNode{
+    top: 10px;
+    left: 10px;
+    position: relative;
+    border: 2px solid;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: #ffffff;
+    background-size: contain;
+    background-position: center;
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+
+  }
+
+  #connectionLines {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    animation: connections 1s ease-out forwards; /* Animation will play once */
+  }
+  #prereq{
+    top:60px;
+    
+  }
+
 </style>
+<div class="mt-[120px] h-[200px] w-screen justify-center text-align align-content flex">
+    <div class="h-[200px] w-screen justify-center text-align align-content flex absolute"> 
+    <p id="exercise_title" class="font-extrabold relative">{{exercise.name}}</p>
+    </div>
+
+    <img id="img" src="{{ exercise.image.url }}" alt="">
+    <div class=" ">
+        <div id="prereq"class="text-align justify-center align-items flex relative">
+        <p ></p>
+        </div>
+    <div id="progressBody"> 
+        {% for prerequisite in exercise.prerequisites.all %}
+                    <div data-progress="{{prerequisite.progress}}" data-name="{{prerequisite.name}}" {% if prerequisite.image %}data-img="{{ prerequisite.image.url }}"{% endif %}>
+                    </div>
+        {% empty %}
+        
+        <p>No prerecs</p>
+        {% endfor %}
+        <svg id="connectionLines"></svg>
+        <div id="centerNode" class="progressNode" data-progress="{{exercise.progress}}" data-name="{{exercise.name}}" {% if exercise.image %}data-img="{{ exercise.image.url }}"{% endif %}> 
+            <div id="innerCenterNode"class="innerNode">
+            
+            </div>
+        </div>
+
+
+    </div>
+    </div>
+
+</div>
+
+<div class="w-screen h-screen"></div>
 <div class="container mx-auto mt-[120px] min-h-screen ">
     <div class="text-center ">
         <h2 class="text-4xl font-bold mb-8" style="color: #6C63FF;">{{ exercise.name }}</h2>
@@ -122,4 +260,82 @@
     
     
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+    const progressBody = document.getElementById('progressBody');
+    const children = progressBody.children;
+    const nodesData = [];
+    console.log("length",children.length)
+    for(var i = 0; i < children.length-2; i++) {
+        nodesData.push({name:children[i].dataset.name, progress: children[i].dataset.progress, img:children[i].dataset.img })
+    }
+    //{ name: "Node 1", progress: 20, imageUrl: "source/knot.jpg" },
+    console.log("nodesData",nodesData)
+
+    const svgContainer = document.getElementById('connectionLines');
+    const centerX = 242; // Center of the progressBody
+    const centerY = 242;
+    const radius = 150; // Distance from center
+    const nodeRadius = 40; // Half the width/height of a node
+
+    const centerNode = document.getElementById('centerNode');
+    const innerCenterNode = document.getElementById('innerCenterNode');
+    const progress = centerNode.dataset.progress;
+    const color = `rgb(${(100-(progress*0.7))*2.55},${progress*2.55},00)`;
+    centerNode.style.background = `conic-gradient(${color} ${progress}%, transparent ${progress}%)`;
+    if (centerNode.dataset.img){
+        innerCenterNode.style.backgroundImage = `url('${centerNode.dataset.img}')`;
+      }else{
+        const pTag = document.createElement('p');
+        pTag.textContent = data.name; // Set the content of the p tag to the data name
+        pTag.classList.add('no-image'); 
+        innerCenterNode.appendChild(pTag);
+      }
+    const degrees = 360 / nodesData.length;
+    nodesData.forEach((data, index) => {
+    
+      let node = document.createElement('div');
+      node.className = 'progressNode';
+      node.style.position = 'absolute';
+      node.style.animationDelay = `${index * 0.2}s`; // Stagger the animation of each node
+
+      let angle = (360 / nodesData.length) * index;
+      let radian = angle * (Math.PI / 180);
+      let nodeX = centerX + radius * Math.cos(radian);
+      let nodeY = centerY + radius * Math.sin(radian);
+      
+      node.style.top = `${nodeY - nodeRadius}px`; 
+      node.style.left = `${nodeX - nodeRadius}px`;
+      
+      node.style.background = `conic-gradient(rgb(${(100-data.progress)*2.55}, ${data.progress*2}, 0) ${data.progress}%, transparent ${data.progress}%)`;
+      let innerNode = document.createElement('div');
+      if (data.img){
+        innerNode.style.backgroundImage = `url('${data.img}')`;
+      }else{
+        const pTag = document.createElement('p');
+        pTag.textContent = data.name; // Set the content of the p tag to the data name
+        pTag.classList.add('no-image'); 
+        innerNode.appendChild(pTag);
+      }
+
+      innerNode.style.backgroundImage = `url('${data.img}')`;
+      innerNode.className = 'innerNode';
+      
+      node.appendChild(innerNode);
+  
+      progressBody.appendChild(node);
+
+      let line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+      line.setAttribute("x1", centerX+10);
+      line.setAttribute("y1", centerY+10);
+      line.setAttribute("x2", nodeX+10);
+      line.setAttribute("y2", nodeY+10);
+      line.setAttribute("stroke", "black");
+      svgContainer.appendChild(line);
+      svgContainer.style.animationDelay = `2s`; // Stagger the animation of each node
+    });
+  });
+  
+</script>
 {% endblock %}

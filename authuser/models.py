@@ -43,6 +43,20 @@ class User(AbstractBaseUser, PermissionsMixin):
     last_login = models.DateTimeField(blank=True, null=True)
 
     objects = CustomUserManager()
+    PROGRESS_CHOICES = (
+        (0, 'Never Tried'),
+        (10, 'Tried in Lines'),
+        (20, 'In Lines (5 seconds+)'),
+        (30, 'With Spotters (5 s+)'),
+        (40, 'In Lines (10 s+)'),
+        (50, 'With Spotters (10 s+)'),
+        (60, 'Out of Lines (10 s+)'),
+        (70, 'Consistently Out of Lines with Multiple People (10 s+)'),
+        (80, 'Consistently Out of Lines No Steps (10 s+)'),
+        (90, 'Consistently Out of Lines No Steps with Multiple People (10 s+)'),
+        (100, 'Mastered')
+    )
+    
 
     USERNAME_FIELD = 'email'
     EMAIL_FIELD = 'email'
@@ -57,3 +71,4 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def get_short_name(self):
         return self.name or self.email.split('@')[0]
+

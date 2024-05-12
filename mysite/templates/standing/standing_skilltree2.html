@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    #progressBody{
+    height: 504px;
+    width: 504px;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f4f4f4;
+  }
+
+  @keyframes moveNode {
+    from {
+      transform: translateX(-500px); /* Starts far left */
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0); /* Ends at the calculated position */
+      opacity: 1;
+    }
+  }
+  @keyframes connections {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  #centerNode{
+    width: 140px;
+    height: 140px;
+    /* border: 2px solid */
+  }
+  #innerCenterNode{
+    top: 10px;
+    left: 10px;
+    position: relative;
+    border: 2px solid;
+    width: 120px;
+    height: 120px;
+    background-image: url("source/monoknotQuad.jpg");
+  }
+  .progressNode {
+    opacity: 0;
+    /* border: 2px solid; */
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    position: absolute;
+    animation: moveNode 1s ease-out forwards; /* Animation will play once */
+  }
+
+  .innerNode{
+    top: 10px;
+    left: 10px;
+    position: relative;
+    border: 2px solid;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    
+    background-size: contain;
+    background-position: center;
+
+  }
+
+  #connectionLines {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    animation: connections 1s ease-out forwards; /* Animation will play once */
+  }
+
+</style>
+<div id="progressBody"> 
+    <svg id="connectionLines"></svg>
+    <div id="centerNode" class="progressNode">
+        <div id="innerCenterNode"class="innerNode">
+        
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+    const progressBody = document.getElementById('progressBody');
+    const nodesData = [
+        { name: "Node 1", progress: 20, imageUrl: "source/knot.jpg" },
+        { name: "Node 2", progress: 100, imageUrl: "source/extendedKnot.jpg" },
+        { name: "Node 3", progress: 100, imageUrl: "source/extendedf2hS.jpg" },
+        { name: "Node 4", progress: 100, imageUrl: "source/extendedf2hS.jpg" },
+        { name: "Node 3", progress: 100, imageUrl: "source/extendedf2hS.jpg" },
+        { name: "Node 4", progress: 100, imageUrl: "source/extendedf2hS.jpg" },
+        
+        
+      // Add more nodes as needed
+    ];
+
+    const svgContainer = document.getElementById('connectionLines');
+    const centerX = 242; // Center of the progressBody
+    const centerY = 242;
+    const radius = 150; // Distance from center
+    const nodeRadius = 40; // Half the width/height of a node
+
+    const centerNode = document.getElementById('centerNode');
+    const progress = 90;
+    const color = `rgb(${(100-(progress*0.7))*2.55},${progress*2.55},00)`;
+    centerNode.style.background = `conic-gradient(${color} ${progress}%, transparent ${progress}%)`;
+
+    const degrees = 360 / nodesData.length;
+    nodesData.forEach((data, index) => {
+    
+      let node = document.createElement('div');
+      node.className = 'progressNode';
+      node.style.position = 'absolute';
+      node.style.animationDelay = `${index * 0.2}s`; // Stagger the animation of each node
+
+      let angle = (360 / nodesData.length) * index;
+      let radian = angle * (Math.PI / 180);
+      let nodeX = centerX + radius * Math.cos(radian);
+      let nodeY = centerY + radius * Math.sin(radian);
+      
+      node.style.top = `${nodeY - nodeRadius}px`; 
+      node.style.left = `${nodeX - nodeRadius}px`;
+      
+      node.style.background = `conic-gradient(rgb(${(100-data.progress)*2.55}, ${data.progress*2}, 0) ${data.progress}%, transparent ${data.progress}%)`;
+      let innerNode = document.createElement('div');
+      innerNode.style.backgroundImage = `url('${data.imageUrl}')`;
+      innerNode.className = 'innerNode';
+      
+      node.appendChild(innerNode);
+  
+      progressBody.appendChild(node);
+
+      let line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+      line.setAttribute("x1", centerX+10);
+      line.setAttribute("y1", centerY+10);
+      line.setAttribute("x2", nodeX+10);
+      line.setAttribute("y2", nodeY+10);
+      line.setAttribute("stroke", "black");
+      svgContainer.appendChild(line);
+      svgContainer.style.animationDelay = `2s`; // Stagger the animation of each node
+    });
+  });
+  
+</script>
+
+{% endblock %}

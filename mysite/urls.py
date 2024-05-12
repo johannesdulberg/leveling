@@ -1,3 +1,8 @@
+from django.conf import settings
+from django.conf.urls.static import static
+
+
+
 """mysite URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
@@ -25,4 +30,8 @@ urlpatterns = [
     path('moves/', include('moves.urls')),
     path('authuser/', include('authuser.urls')),
     path("__reload__/", include("django_browser_reload.urls")),
+    path('standing/', include('standing.urls')),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
